@@ -6,9 +6,9 @@ RSpec.describe ProjectsController, type: :controller do
   describe 'GET #index' do
     let(:projects) { create_list(:project, 3) }
     
-    before { get :index }
+    before { get :index}
 
-    it 'populates ana array of all questions' do
+    it 'populates an array of all projects' do
       expect(assigns(:projects)).to match_array(projects)
     end
 
@@ -112,7 +112,7 @@ RSpec.describe ProjectsController, type: :controller do
 
   describe 'DELETE #destroy' do
     let!(:project) { create(:project) }
-        
+
     it 'deletes the project' do
       expect { delete :destroy, params: { id: project } }.to change(Project, :count).by(-1)      
     end
@@ -121,7 +121,6 @@ RSpec.describe ProjectsController, type: :controller do
       delete :destroy, params: {id: project}
       expect(response).to redirect_to projects_path
     end
-
   end
 
 
