@@ -4,7 +4,7 @@ feature "User can edited projects", %q{
   In order change project, user can edited project
 }do
   given(:user) { create(:user) }
-  given!(:project) { create :project}
+  given!(:project) { create :project, author: user}
 
   context "Authenticated user tries" do
     background do 
@@ -31,7 +31,7 @@ feature "User can edited projects", %q{
 
   scenario "unauthenticated user tires edited project" do
     visit projects_path
-    expect(page).to_not have_content 'Edit'
+    expect(page).to have_content 'You need to sign in or sign up before continuing.'
   end
 
 end

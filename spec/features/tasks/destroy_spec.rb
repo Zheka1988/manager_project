@@ -4,8 +4,8 @@ feature 'User can delete projects',%q{
   Authenticated user can delete project
 }do
   given(:user) { create :user }
-  given(:project) { create :project }
-  given!(:task) { create :task, project: project }
+  given(:project) { create :project, author: user }
+  given!(:task) { create :task, project: project, author: user }
 
   scenario "Authenticated user tries delete project" do
     sign_in user
@@ -19,8 +19,6 @@ feature 'User can delete projects',%q{
   
   scenario "Unauthenticated user tries delete project" do
     visit project_path(project)
-    within '.tasks' do
-      expect(page).to_not have_link 'Delete', href: task_path(task)
-    end
+    expect(page).to have_content 'You need to sign in or sign up before continuing.'
   end
 end

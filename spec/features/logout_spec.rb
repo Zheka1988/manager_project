@@ -9,7 +9,7 @@ feature 'User can logout', %q{
   scenario "logged user can logout system" do
     sign_in user
     click_on 'Logout'
-    expect(page).to have_content 'Signed out successfully.'
+    expect(page).to have_content 'You need to sign in or sign up before continuing.'
   end
 
   scenario "unlogged user can not logout system" do

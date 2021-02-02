@@ -4,8 +4,8 @@ feature "User can edited projects", %q{
   In order change project, user can edited project
 }do
   given(:user) { create(:user) }
-  given(:project) { create :project }
-  given!(:task) { create :task, project: project }
+  given(:project) { create :project, author: user }
+  given!(:task) { create :task, project: project, author: user }
 
   context "Authenticated user tries" do
     background do 
@@ -34,9 +34,7 @@ feature "User can edited projects", %q{
   scenario "unauthenticated user tires edited project" do
     visit project_path(project)
     
-    within '.tasks' do
-      expect(page).to_not have_link 'Edit', href: project_path(project)
-    end
+    expect(page).to have_content 'You need to sign in or sign up before continuing.'
   end
 
 end

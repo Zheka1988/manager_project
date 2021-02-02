@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_29_103158) do
+ActiveRecord::Schema.define(version: 2021_02_02_051035) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,6 +20,8 @@ ActiveRecord::Schema.define(version: 2021_01_29_103158) do
     t.string "description"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "author_id"
+    t.index ["author_id"], name: "index_projects_on_author_id"
   end
 
   create_table "tasks", force: :cascade do |t|
@@ -30,6 +32,8 @@ ActiveRecord::Schema.define(version: 2021_01_29_103158) do
     t.boolean "completed", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "author_id"
+    t.index ["author_id"], name: "index_tasks_on_author_id"
     t.index ["project_id"], name: "index_tasks_on_project_id"
   end
 
@@ -45,5 +49,7 @@ ActiveRecord::Schema.define(version: 2021_01_29_103158) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "projects", "users", column: "author_id"
   add_foreign_key "tasks", "projects"
+  add_foreign_key "tasks", "users", column: "author_id"
 end

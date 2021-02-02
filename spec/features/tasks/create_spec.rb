@@ -5,7 +5,7 @@ feature 'User can add task to project', %q{
   user can add task
 } do
   given(:user) { create :user }
-  given(:project) { create :project }
+  given(:project) { create :project, author: user }
   
   context "Authenticated user can add task for project" do
     background do
@@ -31,7 +31,7 @@ feature 'User can add task to project', %q{
   end
   scenario "Unauthenticated user can add task for project" do
     visit project_path(project)
-    click_on 'Add Task'
+
     expect(page).to have_content "You need to sign in or sign up before continuing."
   end
 end

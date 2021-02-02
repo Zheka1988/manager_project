@@ -15,6 +15,7 @@ class TasksController < ApplicationController
 
   def create
     @task = @project.tasks.build(task_params)
+    @task.author = current_user
     if @task.save
       redirect_to @task, notice: 'Your task has been successfully added.'
     else

@@ -2,11 +2,11 @@ require 'rails_helper'
 
 RSpec.describe TasksController, type: :controller do
   let(:user) { create :user }
-  let(:project) { create :project }
-  let(:task) { create(:task, project: project) }
-
+  let(:project) { create :project, author: user }
+  let(:task) { create(:task, project: project, author: user) }
+  before { login(user) }  
+  
   describe 'GET #show' do
-    before { login(user) }  
     before { get :show, params: { id: task } }
     it "assign the requested task to @task" do
       expect(assigns(:task)).to eq task
@@ -18,7 +18,6 @@ RSpec.describe TasksController, type: :controller do
   end
 
   describe 'GET #new' do
-    before { login(user) }  
     before { get :new , params: {project_id: project }}
     it "assigns new task to @task" do
       expect(assigns(:task)).to be_a_new(Task)
@@ -30,7 +29,6 @@ RSpec.describe TasksController, type: :controller do
   end
 
   describe 'GET #edit' do
-    before { login(user) }  
     before { get :edit, params: {id: task} }   
     it "assigns the requested task to @task" do
       expect(assigns(:task)).to eq task
@@ -42,16 +40,15 @@ RSpec.describe TasksController, type: :controller do
   end
 
   describe 'POST #create' do
-    before { login(user) }  
     context "with valid attribute" do
       it 'saves a new task in the database' do
-        expect { post :create, params: {project_id: project, task: attributes_for(:task) } }.to change(Task, :count).by(1)
+        expect { post :create, params: {project_id: project, task: attributes_for(:task), author: user } }.to change(Task, :count).by(1)
       end
       it 'saves new task related project' do
-        expect { post :create, params: {project_id: project, task: attributes_for(:task) } }.to change(project.tasks, :count).by(1)
+        expect { post :create, params: {project_id: project, task: attributes_for(:task), author: user } }.to change(project.tasks, :count).by(1)
       end
       it 'redirect to show view' do
-        post :create, params: {project_id: project, task: attributes_for(:task) }
+        post :create, params: {project_id: project, task: attributes_for(:task), author: user }
         expect(response).to redirect_to assigns(:task)
       end
     end
@@ -68,7 +65,6 @@ RSpec.describe TasksController, type: :controller do
   end
 
   describe 'PATCH #update' do
-    before { login(user) }  
     context 'with valid attribute' do
       it 'assigns the requested task to @task' do
         patch :update, params: { id: task, task: attributes_for(:task) }
@@ -96,8 +92,7 @@ RSpec.describe TasksController, type: :controller do
   end
 
   describe 'DELETE #destroy' do
-    before { login(user) }  
-    let!(:task) { create :task, project: project}
+    let!(:task) { create :task, project: project, author: user}
     it 'deletes the task' do
       expect{ delete :destroy, params: { id: task } }.to change(project.tasks, :count).by(-1)
     end

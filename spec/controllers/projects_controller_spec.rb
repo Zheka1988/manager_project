@@ -2,17 +2,16 @@ require 'rails_helper'
 
 RSpec.describe ProjectsController, type: :controller do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create :project, author: user }
   
-  describe 'GET #index' do
-    let(:projects) { create_list(:project, 3) }
-    
-    before { get :index}
+  before { login(user) }  
 
+  describe 'GET #index' do
+    let(:projects) { create_list(:project, 3, author: user) }
+    before { get :index}      
     it 'populates an array of all projects' do
       expect(assigns(:projects)).to match_array(projects)
     end
-
     it 'render index view' do
       expect(response).to render_template :index
     end
@@ -30,9 +29,7 @@ RSpec.describe ProjectsController, type: :controller do
     end
   end
 
-  describe 'GET #new' do
-    before { login(user) }
-    
+  describe 'GET #new' do 
     before { get :new }
 
     it 'assigns a new Project to @project' do
@@ -44,7 +41,6 @@ RSpec.describe ProjectsController, type: :controller do
   end
 
   describe 'GET #edit' do 
-    before { login(user) }   
     before { get :edit, params: {id: project } }
 
     it 'assigns the requested project to @project' do
@@ -57,13 +53,12 @@ RSpec.describe ProjectsController, type: :controller do
   end
 
   describe 'POST #create' do
-    before { login(user) }
     context 'with valid attributes' do
       it 'saves a new project in the database' do
-        expect { post :create, params: { project: attributes_for(:project) } }.to change(Project, :count).by(1)
+        expect { post :create, params: { project: attributes_for(:project), author: user } }.to change(Project, :count).by(1)
       end
       it 'redirect to show view' do
-        post :create, params: { project: attributes_for(:project) }
+        post :create, params: { project: attributes_for(:project, author: user) }
         expect(response).to redirect_to assigns(:project)
       end
     end
@@ -80,7 +75,6 @@ RSpec.describe ProjectsController, type: :controller do
   end
 
   describe 'PATCH #update' do
-    before { login(user) }  
     context 'with valid attributes' do
       it 'assigns the requested project to @project' do
         patch :update, params: { id: project, project: attributes_for(:project) }
@@ -117,8 +111,7 @@ RSpec.describe ProjectsController, type: :controller do
   end
 
   describe 'DELETE #destroy' do
-    before { login(user) }
-    let!(:project) { create(:project) }
+    let!(:project) { create(:project, author: user) }
 
     it 'deletes the project' do
       expect { delete :destroy, params: { id: project } }.to change(Project, :count).by(-1)      
