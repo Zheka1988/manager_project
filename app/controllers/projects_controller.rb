@@ -1,4 +1,5 @@
 class ProjectsController < ApplicationController
+  before_action :authenticate_user!, except: [:index, :show]
   before_action :load_project, only: [:show, :edit, :update, :destroy]
 
   def index
@@ -18,7 +19,7 @@ class ProjectsController < ApplicationController
   def create
     @project = Project.new(project_params)
     if @project.save
-      redirect_to @project
+      redirect_to @project, notice: "Your project successfully created."
     else
       render :new
     end

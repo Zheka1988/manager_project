@@ -1,28 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe TasksController, type: :controller do
+  let(:user) { create :user }
   let(:project) { create :project }
   let(:task) { create(:task, project: project) }
 
-  describe 'GET #index' do
-    let!(:tasks) { create_list(:task, 3, project: project) }
-
-    before { get :index, params: {project_id: project} }
-
-    it 'populates an array of all tasks' do
-      expect(assigns(:tasks)).to eq tasks
-    end
-
-    it 'tasks is related to the project' do
-      expect(assigns(:project).tasks.count).to eq tasks.count
-    end
-
-    it 'render index view' do
-      expect(response).to render_template :index
-    end
-  end
-
   describe 'GET #show' do
+    before { login(user) }  
     before { get :show, params: { id: task } }
     it "assign the requested task to @task" do
       expect(assigns(:task)).to eq task
@@ -34,6 +18,7 @@ RSpec.describe TasksController, type: :controller do
   end
 
   describe 'GET #new' do
+    before { login(user) }  
     before { get :new , params: {project_id: project }}
     it "assigns new task to @task" do
       expect(assigns(:task)).to be_a_new(Task)
@@ -45,6 +30,7 @@ RSpec.describe TasksController, type: :controller do
   end
 
   describe 'GET #edit' do
+    before { login(user) }  
     before { get :edit, params: {id: task} }   
     it "assigns the requested task to @task" do
       expect(assigns(:task)).to eq task
@@ -56,6 +42,7 @@ RSpec.describe TasksController, type: :controller do
   end
 
   describe 'POST #create' do
+    before { login(user) }  
     context "with valid attribute" do
       it 'saves a new task in the database' do
         expect { post :create, params: {project_id: project, task: attributes_for(:task) } }.to change(Task, :count).by(1)
@@ -81,6 +68,7 @@ RSpec.describe TasksController, type: :controller do
   end
 
   describe 'PATCH #update' do
+    before { login(user) }  
     context 'with valid attribute' do
       it 'assigns the requested task to @task' do
         patch :update, params: { id: task, task: attributes_for(:task) }
@@ -108,13 +96,14 @@ RSpec.describe TasksController, type: :controller do
   end
 
   describe 'DELETE #destroy' do
+    before { login(user) }  
     let!(:task) { create :task, project: project}
     it 'deletes the task' do
       expect{ delete :destroy, params: { id: task } }.to change(project.tasks, :count).by(-1)
     end
     it 'redirect to index' do
       delete :destroy, params: { id: task }
-      expect(response).to redirect_to project_tasks_path(project)
+      expect(response).to redirect_to project_path(project)
     end
 
   end

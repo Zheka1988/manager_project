@@ -1,0 +1,17 @@
+h1 = @project.title
+p= @project.description
+
+= link_to 'Add Task', new_project_task_path(@project)
+
+.tasks
+  - if current_user && @project.tasks
+    - @project.tasks.each do |task|
+      h3= task.body
+      = link_to 'Edit', edit_task_path(task)
+      = link_to 'Delete', task_path(task),
+        method: :delete,
+        params: { confirm: 'Are you sure?' }
+      p
+        =task.deadline
+      p
+        =task.priority

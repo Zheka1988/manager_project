@@ -1,0 +1,11 @@
+p= link_to 'New project', new_project_path
+
+-@projects.each do |project|
+  h3= project.title
+  p
+    = project.description
+    - if current_user
+      = link_to 'Edit', edit_project_path(project)
+      = link_to 'Delete', project_path(project),
+        method: :delete,
+        params: { confirm: 'Are you sure?' }

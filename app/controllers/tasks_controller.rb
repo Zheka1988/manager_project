@@ -1,16 +1,13 @@
 class TasksController < ApplicationController
-  before_action :load_project, only: [:index, :create]
+  before_action :authenticate_user! 
+  before_action :load_project, only: [:create, :new]
   before_action :load_task, only: [:show, :edit, :update, :destroy]
-  
-  def index
-    @tasks = @project.tasks
-  end
 
   def show  
   end
 
   def new
-    @task = Task.new
+    @task = @project.tasks.new
   end
 
   def edit   
@@ -19,7 +16,7 @@ class TasksController < ApplicationController
   def create
     @task = @project.tasks.build(task_params)
     if @task.save
-      redirect_to @task
+      redirect_to @task, notice: 'Your task has been successfully added.'
     else
       render :new
     end
@@ -27,7 +24,7 @@ class TasksController < ApplicationController
 
   def update
     if @task.update(task_params)
-      redirect_to @task
+      redirect_to @task, notice: "Your task has been successfully edited."
     else
       render :edit
     end
@@ -35,7 +32,7 @@ class TasksController < ApplicationController
 
   def destroy
     @task.destroy
-    redirect_to project_tasks_path(@task.project)
+    redirect_to project_path(@task.project)
   end
 
   private
