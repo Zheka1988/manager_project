@@ -4,10 +4,12 @@ RSpec.describe TasksController, type: :controller do
   let(:user) { create :user }
   let(:project) { create :project, author: user }
   let(:task) { create(:task, project: project, author: user) }
+  
   before { login(user) }  
   
   describe 'GET #show' do
     before { get :show, params: { id: task } }
+    
     it "assign the requested task to @task" do
       expect(assigns(:task)).to eq task
     end
@@ -19,6 +21,7 @@ RSpec.describe TasksController, type: :controller do
 
   describe 'GET #new' do
     before { get :new , params: {project_id: project }}
+    
     it "assigns new task to @task" do
       expect(assigns(:task)).to be_a_new(Task)
     end
@@ -30,6 +33,7 @@ RSpec.describe TasksController, type: :controller do
 
   describe 'GET #edit' do
     before { get :edit, params: {id: task} }   
+    
     it "assigns the requested task to @task" do
       expect(assigns(:task)).to eq task
     end
@@ -45,12 +49,15 @@ RSpec.describe TasksController, type: :controller do
         post :create, params: { project_id: project, task: attributes_for(:task) }
         expect(assigns(:task).author_id).to eq(user.id)
       end
+      
       it 'saves a new task in the database' do
         expect { post :create, params: {project_id: project, task: attributes_for(:task), author: user } }.to change(Task, :count).by(1)
       end
+      
       it 'saves new task related project' do
         expect { post :create, params: {project_id: project, task: attributes_for(:task), author: user } }.to change(project.tasks, :count).by(1)
       end
+      
       it 'redirect to show view' do
         post :create, params: {project_id: project, task: attributes_for(:task), author: user }
         expect(response).to redirect_to assigns(:task)
@@ -74,10 +81,12 @@ RSpec.describe TasksController, type: :controller do
         patch :update, params: { id: task, task: attributes_for(:task) }
         expect(assigns(:task)).to eq task
       end
+      
       it 'changes task attributes' do
         patch :update, params: { id: task, task: { body: "New body"} }
         expect(assigns(:task).body).to eq "New body"
       end
+      
       it 'redirect to updated task' do
         patch :update, params: { id: task, task: attributes_for(:task) }
         expect(response).to redirect_to task
@@ -97,13 +106,23 @@ RSpec.describe TasksController, type: :controller do
 
   describe 'DELETE #destroy' do
     let!(:task) { create :task, project: project, author: user}
+    
     it 'deletes the task' do
       expect{ delete :destroy, params: { id: task } }.to change(project.tasks, :count).by(-1)
     end
+    
     it 'redirect to index' do
       delete :destroy, params: { id: task }
       expect(response).to redirect_to project_path(project)
     end
-
   end
+
+  describe 'POST #complete_task' do
+    it 'user can complete task' do
+      post :complete_task, params: { id: task, task: { completed: :true } }
+      task.reload
+      expect(task.completed).to eq true
+    end
+  end
+
 end

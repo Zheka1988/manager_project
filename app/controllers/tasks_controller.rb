@@ -1,7 +1,7 @@
 class TasksController < ApplicationController
   before_action :authenticate_user! 
   before_action :load_project, only: [:create, :new]
-  before_action :load_task, only: [:show, :edit, :update, :destroy]
+  before_action :load_task, only: [:show, :edit, :update, :destroy, :complete_task]
 
   def show  
   end
@@ -34,6 +34,15 @@ class TasksController < ApplicationController
   def destroy
     @task.destroy
     redirect_to project_path(@task.project)
+  end
+
+  def complete_task
+    if current_user.author_of?(@task)
+      @task.complete_task
+      redirect_to project_path(@task.project), notice: "Task completed"
+    else
+      flash[:notice] = "Only author can completed task"
+    end
   end
 
   private

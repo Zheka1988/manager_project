@@ -4,6 +4,8 @@ Rails.application.routes.draw do
   root to: "projects#index"
   
   resources :projects, shallow: true do
-    resources :tasks, shallow: true
+    resources :tasks, shallow: true do
+      member { post :complete_task }
+    end
   end
 end

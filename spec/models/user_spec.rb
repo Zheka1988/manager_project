@@ -9,7 +9,7 @@ RSpec.describe User, type: :model do
 
   describe 'Methods' do
     let(:user) { create :user }
-  
+    
     it "valid verification of authorship" do
       project = FactoryBot.create(:project, author: user)
       expect(user).to be_author_of(project)
