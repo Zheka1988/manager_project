@@ -1,3 +1,5 @@
 h3= @task.body
 p= @task.priority
 p= @task.deadline  
+
+= link_to "Back to Project", project_path(@task.project)

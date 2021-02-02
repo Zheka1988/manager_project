@@ -54,6 +54,11 @@ RSpec.describe ProjectsController, type: :controller do
 
   describe 'POST #create' do
     context 'with valid attributes' do
+      it 'communication with logged in user is established' do
+        post :create, params: { project: attributes_for(:project) }
+        expect(assigns(:project).author_id).to eq user.id
+      end
+
       it 'saves a new project in the database' do
         expect { post :create, params: { project: attributes_for(:project), author: user } }.to change(Project, :count).by(1)
       end

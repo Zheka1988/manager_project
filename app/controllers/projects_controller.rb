@@ -3,7 +3,7 @@ class ProjectsController < ApplicationController
   before_action :load_project, only: [:show, :edit, :update, :destroy]
 
   def index
-    @projects = Project.all
+    @projects = current_user.authored_projects
   end
 
   def show

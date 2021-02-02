@@ -41,6 +41,10 @@ RSpec.describe TasksController, type: :controller do
 
   describe 'POST #create' do
     context "with valid attribute" do
+      it 'communication with logged in user is established' do
+        post :create, params: { project_id: project, task: attributes_for(:task) }
+        expect(assigns(:task).author_id).to eq(user.id)
+      end
       it 'saves a new task in the database' do
         expect { post :create, params: {project_id: project, task: attributes_for(:task), author: user } }.to change(Task, :count).by(1)
       end

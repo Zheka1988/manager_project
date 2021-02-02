@@ -11,3 +11,5 @@
     = f.datetime_select :deadline
   p
     = f.submit 'Save'
+
+= link_to "Back to Project", project_path(@task.project)
