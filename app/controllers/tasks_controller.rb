@@ -3,14 +3,14 @@ class TasksController < ApplicationController
   before_action :load_project, only: [:create, :new]
   before_action :load_task, only: [:show, :edit, :update, :destroy, :complete_task]
 
-  def show  
+  def show
   end
 
   def new
     @task = @project.tasks.new
   end
 
-  def edit   
+  def edit
   end
 
   def create
@@ -51,7 +51,11 @@ class TasksController < ApplicationController
   end
 
   def load_task
-    @task = Task.find(params[:id])
+    if current_user.author_of?(Task.find(params[:id]))
+      @task = Task.find(params[:id])
+    else
+      render(file: File.join(Rails.root, 'public/404.html'), status: 404, layout: false) 
+    end
   end
 
   def load_project

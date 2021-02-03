@@ -33,7 +33,6 @@ feature 'User can create project', %q{
 
   scenario 'Unauthenticated user tries create project' do
     visit projects_path
-
     expect(page).to have_content "You need to sign in or sign up before continuing."
   end
 

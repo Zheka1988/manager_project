@@ -4,18 +4,35 @@ RSpec.describe TasksController, type: :controller do
   let(:user) { create :user }
   let(:project) { create :project, author: user }
   let(:task) { create(:task, project: project, author: user) }
-  
+
+  let(:other_user) { create :user }
+  let(:other_project) { create :project, author: other_user }    
+  let(:other_task) { create(:task, project: other_project, author: other_user) }
+
   before { login(user) }  
   
-  describe 'GET #show' do
-    before { get :show, params: { id: task } }
-    
-    it "assign the requested task to @task" do
-      expect(assigns(:task)).to eq task
+  describe 'GET #show' do    
+    context "as author" do
+      before { get :show, params: { id: task } }
+      it "assign the requested task to @task" do
+        expect(assigns(:task)).to eq task
+      end
+
+      it 'render show view' do
+        expect(response).to render_template :show
+      end
     end
 
-    it 'render show view' do
-      expect(response).to render_template :show
+    context "as not author" do
+      before { get :show, params: { id: other_task } }
+      
+      it "does not assign the requested task to @task" do
+        expect(assigns(:task)).to eq nil
+      end
+
+      it 'renders page 404 erros' do
+        expect(response).to have_http_status(:missing)
+      end      
     end
   end
 
@@ -32,14 +49,28 @@ RSpec.describe TasksController, type: :controller do
   end
 
   describe 'GET #edit' do
-    before { get :edit, params: {id: task} }   
-    
-    it "assigns the requested task to @task" do
-      expect(assigns(:task)).to eq task
+    context "As author" do
+      before { get :edit, params: {id: task} }   
+      
+      it "assigns the requested task to @task" do
+        expect(assigns(:task)).to eq task
+      end
+
+      it 'render edit view' do
+        expect(response).to render_template :edit
+      end
     end
 
-    it 'render edit view' do
-      expect(response).to render_template :edit
+    context "As not author" do
+      before { get :edit, params: {id: other_task} }
+      
+      it "does not assign the requested task to @task" do
+        expect(assigns(:task)).to eq nil
+      end
+
+      it "render page 404 error" do
+        expect(response).to have_http_status(:missing)
+      end
     end
   end
 
@@ -76,53 +107,102 @@ RSpec.describe TasksController, type: :controller do
   end
 
   describe 'PATCH #update' do
-    context 'with valid attribute' do
-      it 'assigns the requested task to @task' do
-        patch :update, params: { id: task, task: attributes_for(:task) }
-        expect(assigns(:task)).to eq task
+    context "as author" do
+      context 'with valid attribute' do
+        it 'assigns the requested task to @task' do
+          patch :update, params: { id: task, task: attributes_for(:task) }
+          expect(assigns(:task)).to eq task
+        end
+        
+        it 'changes task attributes' do
+          patch :update, params: { id: task, task: { body: "New body"} }
+          expect(assigns(:task).body).to eq "New body"
+        end
+        
+        it 'redirect to updated task' do
+          patch :update, params: { id: task, task: attributes_for(:task) }
+          expect(response).to redirect_to task
+        end
       end
-      
-      it 'changes task attributes' do
-        patch :update, params: { id: task, task: { body: "New body"} }
-        expect(assigns(:task).body).to eq "New body"
-      end
-      
-      it 'redirect to updated task' do
-        patch :update, params: { id: task, task: attributes_for(:task) }
-        expect(response).to redirect_to task
+
+      context 'with invalid attribute' do
+        before { patch :update, params: { id: task, task: attributes_for(:task, :invalid) } }
+        
+        it 'not changes task attributes' do
+          task.reload
+          expect(task.body).to eq "MyText"
+        end
+
+        it "render edit view" do
+          expect(response).to render_template :edit
+        end
       end
     end
-    context 'with valid attribute' do
-      before { patch :update, params: { id: task, task: attributes_for(:task, :invalid) } }
-      it 'not changes task attributes' do
-        task.reload
-        expect(task.body).to eq "MyText"
+
+    context "as not author" do
+      it "does not assign the requested task to @task" do
+        patch :update, params: { id: other_task, task: { body: "New body"} }
+        expect(assigns(:task)).to eq nil
       end
-      it "render edit view" do
-        expect(response).to render_template :edit
+
+      it "render page 404 error" do
+        patch :update, params: { id: other_task, task: attributes_for(:task) }
+        expect(response).to have_http_status(:missing)
       end
     end
   end
 
-  describe 'DELETE #destroy' do
-    let!(:task) { create :task, project: project, author: user}
-    
-    it 'deletes the task' do
-      expect{ delete :destroy, params: { id: task } }.to change(project.tasks, :count).by(-1)
+  describe 'DELETE #destroy' do    
+    context "as author" do
+      let!(:task) { create :task, project: project, author: user}      
+      it 'deletes the task' do
+        expect{ delete :destroy, params: { id: task } }.to change(project.tasks, :count).by(-1)
+      end
+      
+      it 'redirect to index' do
+        delete :destroy, params: { id: task }
+        expect(response).to redirect_to project_path(project)
+      end
     end
-    
-    it 'redirect to index' do
-      delete :destroy, params: { id: task }
-      expect(response).to redirect_to project_path(project)
+
+    context "as not author" do
+      let!(:other_task) { create :task, project: other_project, author: other_user}
+      it "not delete the task" do
+        expect { delete :destroy, params: { id: other_task } }.to_not change(other_project.tasks, :count)
+      end
+
+      it "render page 404 error" do
+        delete :destroy, params: { id: other_task }
+        expect(response).to have_http_status :missing
+      end
     end
   end
 
   describe 'POST #complete_task' do
-    it 'user can complete task' do
-      post :complete_task, params: { id: task, task: { completed: :true } }
-      task.reload
-      expect(task.completed).to eq true
+    context "Author" do
+      it 'can complete task' do
+        post :complete_task, params: { id: task, task: { completed: :true } }
+        task.reload
+        expect(task.completed).to eq true
+      end
+
+      it "redirect_to show @task.project" do
+        post :complete_task, params: { id: task, task: { completed: :true } }
+        expect(response).to redirect_to assigns(:task).project 
+      end
     end
+    context "as not author" do
+      it 'can not complete task' do
+        post :complete_task, params: { id: other_task, task: { completed: :true } }
+        other_task.reload
+        expect(other_task.completed).to eq false
+      end
+
+      it "render page 404 error" do
+        post :complete_task, params: { id: other_task, task: { completed: :true } }
+        expect(response).to have_http_status :missing 
+      end
+    end    
   end
 
 end
