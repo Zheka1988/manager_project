@@ -1,5 +1,4 @@
-= render 'shared/errors', resource: @task
-= form_with model: [@project, @task] do |f|
+= form_with model: [@project, @task], local: false, class: 'new-task' do |f|
   p
     = f.label :body
     = f.text_field :body

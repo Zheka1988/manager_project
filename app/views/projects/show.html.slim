@@ -4,9 +4,10 @@
   p= @project.description
 
 .tasks
-  - if @project.tasks    
   = render @project.tasks
 
-.new-task
-  = render 'tasks/form'
+.task-errors
+  = render 'shared/errors', resource: @task  
+
+= render 'tasks/form'
 

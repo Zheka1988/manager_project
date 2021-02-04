@@ -42,39 +42,39 @@ RSpec.describe TasksController, type: :controller do
   describe 'POST #create' do
     context 'with valid attribute' do
       it 'communication with logged in user is established' do
-        post :create, params: { project_id: project, task: attributes_for(:task) }
+        post :create, params: { project_id: project, task: attributes_for(:task) }, format: :js
         expect(assigns(:task).author_id).to eq(user.id)
       end
 
       it 'saves a new task in the database' do
         expect do
           post :create,
-               params: { project_id: project, task: attributes_for(:task), author: user }
+               params: { project_id: project, task: attributes_for(:task), author: user }, format: :js
         end.to change(Task, :count).by(1)
       end
 
       it 'saves new task related project' do
         expect do
           post :create,
-               params: { project_id: project, task: attributes_for(:task), author: user }
+               params: { project_id: project, task: attributes_for(:task), author: user }, format: :js
         end.to change(project.tasks, :count).by(1)
       end
 
-      it 'redirect to project show view' do
-        post :create, params: { project_id: project, task: attributes_for(:task), author: user }
-        expect(response).to redirect_to assigns(:project)
+      it 'renders create template' do
+        post :create, params: { project_id: project, task: attributes_for(:task), author: user }, format: :js
+        expect(response).to render_template :create
       end
     end
 
     context 'with invalid attribute' do
       it 'does not save the project in database' do
         expect do
-          post :create, params: { project_id: project, task: attributes_for(:task, :invalid) }
+          post :create, params: { project_id: project, task: attributes_for(:task, :invalid) }, format: :js
         end.to_not change(Task, :count)
       end
-      it 're-renders show project view' do
-        post :create, params: { project_id: project, task: attributes_for(:task, :invalid) }
-        expect(response).to render_template 'projects/show'
+      it 'renders create template' do
+        post :create, params: { project_id: project, task: attributes_for(:task, :invalid) }, format: :js
+        expect(response).to render_template :create
       end
     end
   end
@@ -83,23 +83,24 @@ RSpec.describe TasksController, type: :controller do
     context 'as author' do
       context 'with valid attribute' do
         it 'assigns the requested task to @task' do
-          patch :update, params: { id: task, task: attributes_for(:task) }
+          patch :update, params: { id: task, task: attributes_for(:task) }, format: :js
           expect(assigns(:task)).to eq task
         end
 
         it 'changes task attributes' do
-          patch :update, params: { id: task, task: { body: 'New body' } }
+          patch :update, params: { id: task, task: { body: 'New body' } }, format: :js
+          task.reload
           expect(assigns(:task).body).to eq 'New body'
         end
 
-        it 'redirect to updated task' do
-          patch :update, params: { id: task, task: attributes_for(:task) }
-          expect(response).to redirect_to task.project
+        it 'renders update view' do
+          patch :update, params: { id: task, task: attributes_for(:task) }, format: :js
+          expect(response).to render_template :update
         end
       end
 
       context 'with invalid attribute' do
-        before { patch :update, params: { id: task, task: attributes_for(:task, :invalid) } }
+        before { patch :update, params: { id: task, task: attributes_for(:task, :invalid) }, format: :js }
 
         it 'not changes task attributes' do
           task.reload
@@ -107,7 +108,7 @@ RSpec.describe TasksController, type: :controller do
         end
 
         it 'render edit view' do
-          expect(response).to render_template :edit
+          expect(response).to render_template :update
         end
       end
     end

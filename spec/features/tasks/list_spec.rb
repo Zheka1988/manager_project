@@ -15,7 +15,7 @@ feature 'User can look his tasks on his project', '
       sign_in(user)
       visit project_path(project)
       within '.tasks' do
-        expect(page).to have_content 'MyText', count: 3
+        expect(page).to have_content 'MyText', count: 6
         expect(page).to have_content '2021-01-28 20:36:18', count: 3
       end
     end

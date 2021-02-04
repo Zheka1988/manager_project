@@ -10,19 +10,12 @@ class TasksController < ApplicationController
   def create
     @task = @project.tasks.build(task_params)
     @task.author = current_user
-    if @task.save
-      redirect_to @project, notice: 'Your task has been successfully added.'
-    else
-      render template: 'projects/show'
-    end
+    @task.save
   end
 
   def update
-    if @task.update(task_params)
-      redirect_to @task.project, notice: 'Your task has been successfully edited.'
-    else
-      render :edit
-    end
+    @task.update(task_params)
+    @project = @task.project
   end
 
   def destroy

@@ -1,0 +1,6 @@
+$('.task-errors').html('<%= render 'shared/errors', resource: @task%>');
+
+<% if @task.persisted? %>
+  $('.tasks').append('<%= j render @task %>');
+  $('.new-task #task_body').val('');
+<% end %>

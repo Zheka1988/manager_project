@@ -9,7 +9,7 @@ feature 'User can add task to project', '
   given(:user) { create :user }
   given(:project) { create :project, author: user }
 
-  context 'Authenticated user can add task for project' do
+  context 'Authenticated user can add task for project', js: true do
     background do
       sign_in user
       visit project_path(project)
@@ -23,7 +23,6 @@ feature 'User can add task to project', '
         click_on 'Save'
       end
 
-      expect(page).to have_content 'Your task has been successfully added.'
       expect(current_path).to eq project_path(project)
       within '.tasks' do
         expect(page).to have_content 'New task'
@@ -33,6 +32,8 @@ feature 'User can add task to project', '
     scenario 'with invalid attribute' do
       within '.new-task' do
         click_on 'Save'
+      end
+      within '.task-errors' do
         expect(page).to have_content "Body can't be blank"
       end
     end

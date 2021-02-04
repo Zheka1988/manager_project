@@ -1,16 +1,30 @@
--if task.persisted?
+-if user_signed_in? && task.persisted?
   p
     = task.body
-    = link_to 'Edit', edit_task_path(task)
+    = link_to 'Edit', '#', class: 'edit-task-link', data: { task_id: task.id }
     = link_to 'Delete', task_path(task),
       method: :delete,
       params: { confirm: 'Are you sure?' }
+    h5= "Deadline #{task.deadline}"
+    h5= "Priority #{task.priority}"
+    p
+      - unless task.completed 
+        = link_to "Complete", complete_task_task_path(task),
+          method: :post,
+          remote: true
+
+
+= form_with model: task, local: false, class: 'hidden', html: {id: "edit-task-#{task.id}"} do |f|
   p
-    = task.deadline
+    = f.label :body
+    = f.text_area :body
   p
-    = task.priority
+    = f.label :priority
+    = f.select :priority, ["1", "2", "3", "4"]
   p
-    - unless task.completed 
-      = link_to "Complete", complete_task_task_path(task),
-        method: :post,
-        remote: true
+    = f.label :deadline
+    = f.datetime_select :deadline
+  p
+    = f.submit 'Save'
+
+

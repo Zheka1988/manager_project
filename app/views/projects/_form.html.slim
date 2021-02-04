@@ -1,7 +1,7 @@
 = render 'shared/errors', resource: @project
 
 .new-project
-  = form_with model: @project do |f|
+  = form_with model: @project, local: false do |f|
     p
       = f.label :title
       = f.text_field :title
