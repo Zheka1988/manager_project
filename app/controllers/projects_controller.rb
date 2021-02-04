@@ -1,27 +1,27 @@
+# frozen_string_literal: true
+
 class ProjectsController < ApplicationController
   before_action :authenticate_user!
-  before_action :load_project, only: [:show, :edit, :update, :destroy]
+  before_action :load_project, only: %i[show edit update destroy]
 
   def index
     @projects = current_user.authored_projects
-  end
-
-  def show
-  end
-
-  def new
     @project = Project.new
   end
 
-  def edit
+  def show
+    @task = Task.new
   end
+
+  def edit; end
 
   def create
     @project = current_user.authored_projects.build(project_params)
     if @project.save
-      redirect_to @project, notice: "Your project successfully created."
+      redirect_to projects_path, notice: 'Your project successfully created.'
     else
-      render :new
+      @projects = current_user.authored_projects
+      render :index
     end
   end
 
@@ -39,6 +39,7 @@ class ProjectsController < ApplicationController
   end
 
   private
+
   def load_project
     if current_user.author_of?(Project.find(params[:id]))
       @project = Project.find(params[:id])

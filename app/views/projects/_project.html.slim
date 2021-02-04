@@ -1,0 +1,9 @@
+- if project.persisted?
+  h3= project.title
+  p
+    = project.description
+    = link_to 'Show', project_path(project)
+    = link_to 'Edit', edit_project_path(project)
+    = link_to 'Delete', project_path(project),
+      method: :delete,
+      params: { confirm: 'Are you sure?' }

@@ -1,0 +1,16 @@
+-if task.persisted?
+  p
+    = task.body
+    = link_to 'Edit', edit_task_path(task)
+    = link_to 'Delete', task_path(task),
+      method: :delete,
+      params: { confirm: 'Are you sure?' }
+  p
+    = task.deadline
+  p
+    = task.priority
+  p
+    - unless task.completed 
+      = link_to "Complete", complete_task_task_path(task),
+        method: :post,
+        remote: true

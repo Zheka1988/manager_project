@@ -1,18 +1,20 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe ProjectsController, type: :controller do
   let(:user) { create(:user) }
   let(:project) { create :project, author: user }
-  
+
   let(:other_user) { create :user }
-  let(:other_project) { create :project, author: other_user }  
-  
-  before { login(user) }  
+  let(:other_project) { create :project, author: other_user }
+
+  before { login(user) }
 
   describe 'GET #index' do
     let(:projects) { create_list(:project, 3, author: user) }
-    before { get :index}      
-    
+    before { get :index }
+
     it 'array of all projects have author is current_user' do
       expect(assigns(:projects)).to eq user.authored_projects
     end
@@ -20,15 +22,19 @@ RSpec.describe ProjectsController, type: :controller do
     it 'populates an array of all projects' do
       expect(assigns(:projects)).to match_array(projects)
     end
-    
+
+    it 'assigns a new Project to @project' do
+      expect(assigns(:project)).to be_a_new(Project)
+    end
+
     it 'render index view' do
       expect(response).to render_template :index
     end
   end
 
-  describe 'GET #show' do  
-    context "as author" do
-      before { get :show, params: {id: project } }
+  describe 'GET #show' do
+    context 'as author' do
+      before { get :show, params: { id: project } }
       it 'assigns the requested project to @project' do
         expect(assigns(:project)).to eq project
       end
@@ -36,12 +42,16 @@ RSpec.describe ProjectsController, type: :controller do
       it 'renders show view' do
         expect(response).to render_template :show
       end
+
+      it 'assigns new task to @task' do
+        expect(assigns(:task)).to be_a_new(Task)
+      end
     end
 
-    context "as not author" do
-      before { get :show, params: {id: other_project } }
+    context 'as not author' do
+      before { get :show, params: { id: other_project } }
 
-      it "does not assign the requested project to @project" do
+      it 'does not assign the requested project to @project' do
         expect(assigns(:project)).to eq nil
       end
 
@@ -51,20 +61,9 @@ RSpec.describe ProjectsController, type: :controller do
     end
   end
 
-  describe 'GET #new' do 
-    before { get :new }
-
-    it 'assigns a new Project to @project' do
-      expect(assigns(:project)).to be_a_new(Project)
-    end
-    it 'render new view' do
-      expect(response).to render_template :new
-    end
-  end
-
-  describe 'GET #edit' do 
-    context "as author" do
-      before { get :edit, params: {id: project } }
+  describe 'GET #edit' do
+    context 'as author' do
+      before { get :edit, params: { id: project } }
 
       it 'assigns the requested project to @project' do
         expect(assigns(:project)).to eq project
@@ -75,10 +74,10 @@ RSpec.describe ProjectsController, type: :controller do
       end
     end
 
-    context "as not author" do
-      before { get :edit, params: {id: other_project } }
+    context 'as not author' do
+      before { get :edit, params: { id: other_project } }
 
-      it "does not assign the requested project to @project" do
+      it 'does not assign the requested project to @project' do
         expect(assigns(:project)).to eq nil
       end
 
@@ -96,11 +95,13 @@ RSpec.describe ProjectsController, type: :controller do
       end
 
       it 'saves a new project in the database' do
-        expect { post :create, params: { project: attributes_for(:project), author: user } }.to change(Project, :count).by(1)
+        expect do
+          post :create, params: { project: attributes_for(:project), author: user }
+        end.to change(Project, :count).by(1)
       end
-      it 'redirect to show view' do
+      it 'redirect to index view' do
         post :create, params: { project: attributes_for(:project, author: user) }
-        expect(response).to redirect_to assigns(:project)
+        expect(response).to redirect_to projects_path
       end
     end
 
@@ -110,13 +111,13 @@ RSpec.describe ProjectsController, type: :controller do
       end
       it 're-renders new view' do
         post :create, params: { project: attributes_for(:project, :invalid) }
-        expect(response).to render_template :new
+        expect(response).to render_template :index
       end
     end
   end
 
   describe 'PATCH #update' do
-    context 'Author' do 
+    context 'Author' do
       context 'with valid attributes' do
         it 'assigns the requested project to @project' do
           patch :update, params: { id: project, project: attributes_for(:project) }
@@ -127,8 +128,8 @@ RSpec.describe ProjectsController, type: :controller do
           patch :update, params: { id: project, project: { title: 'new title', description: 'new description' } }
           project.reload
 
-          expect(project.title).to eq "new title"
-          expect(project.description).to eq "new description"
+          expect(project.title).to eq 'new title'
+          expect(project.description).to eq 'new description'
         end
 
         it 'redirect to updated project' do
@@ -139,21 +140,21 @@ RSpec.describe ProjectsController, type: :controller do
 
       context 'with invalid attributes' do
         before { patch :update, params: { id: project, project: attributes_for(:project, :invalid) } }
-        it 'does not change project' do  
+        it 'does not change project' do
           project.reload
 
-          expect(project.title).to eq "MyString"
-          expect(project.description).to eq "MyString"
+          expect(project.title).to eq 'MyString'
+          expect(project.description).to eq 'MyString'
         end
 
         it 're-render edit view' do
           expect(response).to render_template :edit
         end
-      end  
+      end
     end
 
-    context "Not author" do
-      it "does not assign the requested project to @project" do
+    context 'Not author' do
+      it 'does not assign the requested project to @project' do
         patch :update, params: { id: other_project, project: { title: 'new title', description: 'new description' } }
         expect(assigns(:project)).to eq nil
       end
@@ -165,31 +166,29 @@ RSpec.describe ProjectsController, type: :controller do
     end
   end
 
-  describe 'DELETE #destroy' do  
-    context "Author" do
+  describe 'DELETE #destroy' do
+    context 'Author' do
       let!(:project) { create(:project, author: user) }
-      
+
       it 'deletes the project' do
-        expect { delete :destroy, params: { id: project } }.to change(Project, :count).by(-1)      
+        expect { delete :destroy, params: { id: project } }.to change(Project, :count).by(-1)
       end
-      
+
       it 'redirects to index' do
-        delete :destroy, params: {id: project}
+        delete :destroy, params: { id: project }
         expect(response).to redirect_to projects_path
       end
     end
-    context "Not author" do
-      let!(:other_project) { create :project, author: other_user}
-      
-      it "not delete the project" do
-        expect { delete :destroy, params: { id: other_project } }.to_not change(Project, :count) 
+    context 'Not author' do
+      let!(:other_project) { create :project, author: other_user }
+
+      it 'not delete the project' do
+        expect { delete :destroy, params: { id: other_project } }.to_not change(Project, :count)
       end
       it 'renders page 404 error' do
         delete :destroy, params: { id: other_project }
         expect(response).to have_http_status(:missing)
-      end      
+      end
     end
   end
-
-
 end

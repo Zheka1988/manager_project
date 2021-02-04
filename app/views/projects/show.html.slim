@@ -1,25 +1,12 @@
-h1 = @project.title
-p= @project.description
-
-= link_to 'Add Task', new_project_task_path(@project)
+= link_to "All my Projects", projects_path
+.project
+  h1 = @project.title
+  p= @project.description
 
 .tasks
-  - @project.tasks.each do |task|
-      p
-        = task.body
-        = link_to 'Show', task_path(task)
-        = link_to 'Edit', edit_task_path(task)
-        = link_to 'Delete', task_path(task),
-          method: :delete,
-          params: { confirm: 'Are you sure?' }
-      p
-        =task.deadline
-      p
-        = task.priority
-      p
-        - unless task.completed 
-          = link_to "Complete", complete_task_task_path(task),
-            method: :post,
-            remote: true
+  - if @project.tasks    
+  = render @project.tasks
 
-= link_to "All my Projects", projects_path
+.new-task
+  = render 'tasks/form'
+
