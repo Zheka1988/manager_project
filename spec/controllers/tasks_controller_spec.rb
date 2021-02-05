@@ -13,32 +13,6 @@ RSpec.describe TasksController, type: :controller do
 
   before { login(user) }
 
-  describe 'GET #edit' do
-    context 'As author' do
-      before { get :edit, params: { id: task } }
-
-      it 'assigns the requested task to @task' do
-        expect(assigns(:task)).to eq task
-      end
-
-      it 'render edit view' do
-        expect(response).to render_template :edit
-      end
-    end
-
-    context 'As not author' do
-      before { get :edit, params: { id: other_task } }
-
-      it 'does not assign the requested task to @task' do
-        expect(assigns(:task)).to eq nil
-      end
-
-      it 'render page 404 error' do
-        expect(response).to have_http_status(:missing)
-      end
-    end
-  end
-
   describe 'POST #create' do
     context 'with valid attribute' do
       it 'communication with logged in user is established' do
@@ -156,14 +130,14 @@ RSpec.describe TasksController, type: :controller do
   describe 'POST #complete_task' do
     context 'Author' do
       it 'can complete task' do
-        post :complete_task, params: { id: task, task: { completed: true } }
+        post :complete_task, params: { id: task, task: { completed: true }, format: :js }
         task.reload
         expect(task.completed).to eq true
       end
 
-      it 'redirect_to show @task.project' do
-        post :complete_task, params: { id: task, task: { completed: true } }
-        expect(response).to redirect_to assigns(:task).project
+      it 'render complete template' do
+        post :complete_task, params: { id: task, task: { completed: true }, format: :js }
+        expect(response).to render_template :complete_task
       end
     end
     context 'as not author' do

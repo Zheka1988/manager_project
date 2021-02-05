@@ -9,11 +9,14 @@ div id="task-#{task.id}"
         remote: true
       h5= "Deadline #{task.deadline}"
       h5= "Priority #{task.priority}"
-      p
-        - unless task.completed 
+      p class = "task-complete"
+        - if task.completed
+          p= "Task completed"
+        - else 
           = link_to "Complete", complete_task_task_path(task),
-            method: :post,
-            remote: true
+              method: :post,
+              remote: true
+  
   .task-errors
     = render 'shared/errors', resource: @task  
 

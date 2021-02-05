@@ -3,9 +3,7 @@
 class TasksController < ApplicationController
   before_action :authenticate_user!
   before_action :load_project, only: %i[create]
-  before_action :load_task, only: %i[edit update destroy complete_task]
-
-  def edit; end
+  before_action :load_task, only: %i[update destroy complete_task]
 
   def create
     @task = @project.tasks.build(task_params)
@@ -23,12 +21,7 @@ class TasksController < ApplicationController
   end
 
   def complete_task
-    if current_user.author_of?(@task)
-      @task.complete_task
-      redirect_to project_path(@task.project), notice: 'Task completed'
-    else
-      flash[:notice] = 'Only author can completed task'
-    end
+    @task.complete_task
   end
 
   private
@@ -46,6 +39,10 @@ class TasksController < ApplicationController
   end
 
   def load_project
-    @project = Project.find(params[:project_id])
+    if current_user.author_of?(Project.find(params[:project_id]))
+      @project = Project.find(params[:project_id])
+    else
+      render(file: File.join(Rails.root, 'public/404.html'), status: 404, layout: false)
+    end
   end
 end

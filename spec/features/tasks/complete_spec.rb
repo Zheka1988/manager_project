@@ -11,16 +11,16 @@ feature 'User can complete task', '
   given(:project) { create :project, author: user }
   given!(:task) { create :task, project: project, author: user }
 
-  context 'Authenticate user' do
+  context 'Authenticate user', js: true do
     scenario 'Author can mark the task completed' do
       sign_in user
       visit project_path(project)
 
-      within '.tasks' do
+      within '.task-complete' do
         click_on 'Complete'
         expect(page).to_not have_link 'Complete', href: complete_task_task_path(task)
+        expect(page).to have_content 'Task completed'
       end
-      expect(page).to have_content 'Task completed'
     end
 
     scenario "Not author can't mark the task comleted" do
