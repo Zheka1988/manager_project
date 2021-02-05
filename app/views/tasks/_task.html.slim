@@ -1,30 +1,33 @@
--if user_signed_in? && task.persisted?
-  p
-    = task.body
-    = link_to 'Edit', '#', class: 'edit-task-link', data: { task_id: task.id }
-    = link_to 'Delete', task_path(task),
-      method: :delete,
-      params: { confirm: 'Are you sure?' }
-    h5= "Deadline #{task.deadline}"
-    h5= "Priority #{task.priority}"
+div id="task-#{task.id}"
+  -if user_signed_in? && task.persisted?
     p
-      - unless task.completed 
-        = link_to "Complete", complete_task_task_path(task),
-          method: :post,
-          remote: true
+      = task.body
+      = link_to 'Edit', '#', class: 'edit-task-link', data: { task_id: task.id }
+      = link_to 'Delete', task_path(task),
+        method: :delete,
+        params: { confirm: 'Are you sure?' },
+        remote: true
+      h5= "Deadline #{task.deadline}"
+      h5= "Priority #{task.priority}"
+      p
+        - unless task.completed 
+          = link_to "Complete", complete_task_task_path(task),
+            method: :post,
+            remote: true
+  .task-errors
+    = render 'shared/errors', resource: @task  
 
-
-= form_with model: task, local: false, class: 'hidden', html: {id: "edit-task-#{task.id}"} do |f|
-  p
-    = f.label :body
-    = f.text_area :body
-  p
-    = f.label :priority
-    = f.select :priority, ["1", "2", "3", "4"]
-  p
-    = f.label :deadline
-    = f.datetime_select :deadline
-  p
-    = f.submit 'Save'
+  = form_with model: task, local: false, class: 'hidden', html: {id: "edit-task-#{task.id}"} do |f|
+    p
+      = f.label :body
+      = f.text_area :body
+    p
+      = f.label :priority
+      = f.select :priority, ["1", "2", "3", "4"]
+    p
+      = f.label :deadline
+      = f.datetime_select :deadline
+    p
+      = f.submit 'Save'
 
 

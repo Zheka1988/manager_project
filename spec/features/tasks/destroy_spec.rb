@@ -11,12 +11,13 @@ feature 'User can delete tasks', '
   given!(:task) { create :task, project: project, author: user }
 
   context 'Authenticated user' do
-    scenario 'author tries delete task' do
+    scenario 'author tries delete task', js: true do
       sign_in user
       visit project_path(project)
       within '.tasks' do
         click_on 'Delete'
         expect(page).to_not have_content 'MyText'
+        # 'div#task-#{task.id}'
       end
     end
     scenario 'not author tries delete task' do

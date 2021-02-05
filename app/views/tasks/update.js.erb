@@ -1,5 +1,5 @@
-$('.task-errors').html('<%= render 'shared/errors', resource: @task%>');
+$('.tasks #task-<%= @task.id %> .task-errors').html('<%= render 'shared/errors', resource: @task%>');
 
 <% if !@task.errors.present? %>
-  $('.tasks').html('<%= j render @project.tasks %>');
+  $('.tasks #task-<%= @task.id%> ').html('<%= j render @task %>');
 <% end %>

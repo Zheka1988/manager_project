@@ -42,7 +42,7 @@ feature 'User can edited tasks', '
       end
     end
 
-    scenario 'not author tries edited task', js: true do
+    scenario 'not author tries edited task' do
       sign_in other_user
       visit project_path(project)
       expect(page).to_not have_content 'MyString'
@@ -51,7 +51,7 @@ feature 'User can edited tasks', '
     end
   end
 
-  scenario 'unauthenticated user tires edited task', js: true do
+  scenario 'Unauthenticated user tires edited task' do
     visit project_path(project)
 
     expect(page).to have_content 'You need to sign in or sign up before continuing.'

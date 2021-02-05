@@ -20,7 +20,6 @@ class TasksController < ApplicationController
 
   def destroy
     @task.destroy
-    redirect_to project_path(@task.project)
   end
 
   def complete_task

@@ -13,5 +13,3 @@ import 'common/tasks'
 Rails.start()
 Turbolinks.start()
 ActiveStorage.start()
-
-console.log('Hello from application.js')

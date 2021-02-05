@@ -16,7 +16,7 @@ feature 'User can add task to project', '
     end
 
     scenario 'with valid attribute' do
-      within '.new-task' do
+      within 'form.new-task' do
         fill_in 'Body', with: 'New task'
         select '1', from: 'Priority'
         select_date 2.days.from_now, from: 'task_deadline'
@@ -30,7 +30,7 @@ feature 'User can add task to project', '
     end
 
     scenario 'with invalid attribute' do
-      within '.new-task' do
+      within 'form.new-task' do
         click_on 'Save'
       end
       within '.task-errors' do

@@ -1,4 +1,3 @@
-= link_to "All my Projects", projects_path
 .project
   h1 = @project.title
   p= @project.description
@@ -6,8 +5,7 @@
 .tasks
   = render @project.tasks
 
-.task-errors
-  = render 'shared/errors', resource: @task  
-
-= render 'tasks/form'
-
+.new-task
+  .task-errors
+    = render 'shared/errors', resource: @task 
+  = render 'tasks/form'

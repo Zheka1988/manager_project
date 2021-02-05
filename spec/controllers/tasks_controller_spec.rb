@@ -129,13 +129,14 @@ RSpec.describe TasksController, type: :controller do
   describe 'DELETE #destroy' do
     context 'as author' do
       let!(:task) { create :task, project: project, author: user }
+
       it 'deletes the task' do
-        expect { delete :destroy, params: { id: task } }.to change(project.tasks, :count).by(-1)
+        expect { delete :destroy, params: { id: task }, format: :js }.to change(project.tasks, :count).by(-1)
       end
 
-      it 'redirect to index' do
-        delete :destroy, params: { id: task }
-        expect(response).to redirect_to project_path(project)
+      it 'render destroy template' do
+        delete :destroy, params: { id: task }, format: :js
+        expect(response).to render_template :destroy
       end
     end
 
