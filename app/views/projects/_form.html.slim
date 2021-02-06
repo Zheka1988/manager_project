@@ -1,12 +1,9 @@
-= render 'shared/errors', resource: @project
-
-.new-project
-  = form_with model: @project, local: false do |f|
-    p
-      = f.label :title
-      = f.text_field :title
-    p
-      = f.label :description
-      = f.text_field :description
-    p
-      = f.submit 'Save'
+= form_with model: @project, local: false, class: 'new-project' do |f|
+  p
+    = f.label :title
+    = f.text_field :title
+  p
+    = f.label :description
+    = f.text_field :description
+  p
+    = f.submit 'Save'

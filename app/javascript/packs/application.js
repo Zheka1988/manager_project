@@ -9,6 +9,7 @@ import * as ActiveStorage from "@rails/activestorage"
 import "channels"
 import "jquery"
 import 'common/tasks'
+import 'common/projects'
 
 Rails.start()
 Turbolinks.start()

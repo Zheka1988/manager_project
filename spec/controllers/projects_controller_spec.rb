@@ -61,57 +61,33 @@ RSpec.describe ProjectsController, type: :controller do
     end
   end
 
-  describe 'GET #edit' do
-    context 'as author' do
-      before { get :edit, params: { id: project } }
-
-      it 'assigns the requested project to @project' do
-        expect(assigns(:project)).to eq project
-      end
-
-      it 'renders edit view' do
-        expect(response).to render_template :edit
-      end
-    end
-
-    context 'as not author' do
-      before { get :edit, params: { id: other_project } }
-
-      it 'does not assign the requested project to @project' do
-        expect(assigns(:project)).to eq nil
-      end
-
-      it 'renders page 404 error' do
-        expect(response).to have_http_status(:missing)
-      end
-    end
-  end
-
   describe 'POST #create' do
     context 'with valid attributes' do
       it 'communication with logged in user is established' do
-        post :create, params: { project: attributes_for(:project) }
+        post :create, params: { project: attributes_for(:project) }, format: :js
         expect(assigns(:project).author_id).to eq user.id
       end
 
       it 'saves a new project in the database' do
         expect do
-          post :create, params: { project: attributes_for(:project), author: user }
+          post :create, params: { project: attributes_for(:project), author: user }, format: :js
         end.to change(Project, :count).by(1)
       end
-      it 'redirect to index view' do
-        post :create, params: { project: attributes_for(:project, author: user) }
-        expect(response).to redirect_to projects_path
+      it 'render template create' do
+        post :create, params: { project: attributes_for(:project, author: user) }, format: :js
+        expect(response).to render_template :create
       end
     end
 
     context 'with invalid attributes' do
       it 'does not save the project in database' do
-        expect { post :create, params: { project: attributes_for(:project, :invalid) } }.to_not change(Project, :count)
+        expect do
+          post :create, params: { project: attributes_for(:project, :invalid) }, format: :js
+        end.to_not change(Project, :count)
       end
-      it 're-renders new view' do
-        post :create, params: { project: attributes_for(:project, :invalid) }
-        expect(response).to render_template :index
+      it 'render template create' do
+        post :create, params: { project: attributes_for(:project, :invalid) }, format: :js
+        expect(response).to render_template :create
       end
     end
   end
@@ -120,26 +96,26 @@ RSpec.describe ProjectsController, type: :controller do
     context 'Author' do
       context 'with valid attributes' do
         it 'assigns the requested project to @project' do
-          patch :update, params: { id: project, project: attributes_for(:project) }
+          patch :update, params: { id: project, project: attributes_for(:project) }, format: :js
           expect(assigns(:project)).to eq project
         end
 
         it 'changes projects attributes' do
-          patch :update, params: { id: project, project: { title: 'new title', description: 'new description' } }
+          patch :update, params: { id: project, project: { title: 'new title', description: 'new description' } }, format: :js
           project.reload
 
           expect(project.title).to eq 'new title'
           expect(project.description).to eq 'new description'
         end
 
-        it 'redirect to updated project' do
-          patch :update, params: { id: project, project: attributes_for(:project) }
-          expect(response).to redirect_to project
+        it 'render tamplate update' do
+          patch :update, params: { id: project, project: attributes_for(:project) }, format: :js
+          expect(response).to render_template :update
         end
       end
 
       context 'with invalid attributes' do
-        before { patch :update, params: { id: project, project: attributes_for(:project, :invalid) } }
+        before { patch :update, params: { id: project, project: attributes_for(:project, :invalid) }, format: :js }
         it 'does not change project' do
           project.reload
 
@@ -147,20 +123,20 @@ RSpec.describe ProjectsController, type: :controller do
           expect(project.description).to eq 'MyString'
         end
 
-        it 're-render edit view' do
-          expect(response).to render_template :edit
+        it 'render template update' do
+          expect(response).to render_template :update
         end
       end
     end
 
     context 'Not author' do
       it 'does not assign the requested project to @project' do
-        patch :update, params: { id: other_project, project: { title: 'new title', description: 'new description' } }
+        patch :update, params: { id: other_project, project: { title: 'new title', description: 'new description' }, format: :js }
         expect(assigns(:project)).to eq nil
       end
 
       it 'renders page 404 error' do
-        patch :update, params: { id: other_project, project: attributes_for(:project) }
+        patch :update, params: { id: other_project, project: attributes_for(:project) }, format: :js
         expect(response).to have_http_status(:missing)
       end
     end
@@ -171,22 +147,22 @@ RSpec.describe ProjectsController, type: :controller do
       let!(:project) { create(:project, author: user) }
 
       it 'deletes the project' do
-        expect { delete :destroy, params: { id: project } }.to change(Project, :count).by(-1)
+        expect { delete :destroy, params: { id: project }, format: :js }.to change(Project, :count).by(-1)
       end
 
-      it 'redirects to index' do
-        delete :destroy, params: { id: project }
-        expect(response).to redirect_to projects_path
+      it 'render template destroy' do
+        delete :destroy, params: { id: project }, format: :js
+        expect(response).to render_template :destroy
       end
     end
     context 'Not author' do
       let!(:other_project) { create :project, author: other_user }
 
       it 'not delete the project' do
-        expect { delete :destroy, params: { id: other_project } }.to_not change(Project, :count)
+        expect { delete :destroy, params: { id: other_project }, format: :js }.to_not change(Project, :count)
       end
       it 'renders page 404 error' do
-        delete :destroy, params: { id: other_project }
+        delete :destroy, params: { id: other_project }, format: :js
         expect(response).to have_http_status(:missing)
       end
     end

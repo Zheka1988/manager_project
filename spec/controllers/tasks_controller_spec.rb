@@ -89,12 +89,12 @@ RSpec.describe TasksController, type: :controller do
 
     context 'as not author' do
       it 'does not assign the requested task to @task' do
-        patch :update, params: { id: other_task, task: { body: 'New body' } }
+        patch :update, params: { id: other_task, task: { body: 'New body' }, format: :js }
         expect(assigns(:task)).to eq nil
       end
 
       it 'render page 404 error' do
-        patch :update, params: { id: other_task, task: attributes_for(:task) }
+        patch :update, params: { id: other_task, task: attributes_for(:task) }, format: :js
         expect(response).to have_http_status(:missing)
       end
     end
@@ -116,12 +116,13 @@ RSpec.describe TasksController, type: :controller do
 
     context 'as not author' do
       let!(:other_task) { create :task, project: other_project, author: other_user }
+      
       it 'not delete the task' do
-        expect { delete :destroy, params: { id: other_task } }.to_not change(other_project.tasks, :count)
+        expect { delete :destroy, params: { id: other_task }, format: :js }.to_not change(other_project.tasks, :count)
       end
 
       it 'render page 404 error' do
-        delete :destroy, params: { id: other_task }
+        delete :destroy, params: { id: other_task }, format: :js
         expect(response).to have_http_status :missing
       end
     end
@@ -142,13 +143,13 @@ RSpec.describe TasksController, type: :controller do
     end
     context 'as not author' do
       it 'can not complete task' do
-        post :complete_task, params: { id: other_task, task: { completed: true } }
+        post :complete_task, params: { id: other_task, task: { completed: true }, format: :js }
         other_task.reload
         expect(other_task.completed).to eq false
       end
 
       it 'render page 404 error' do
-        post :complete_task, params: { id: other_task, task: { completed: true } }
+        post :complete_task, params: { id: other_task, task: { completed: true }, format: :js }
         expect(response).to have_http_status :missing
       end
     end

@@ -15,20 +15,22 @@ feature 'User can create project', '
       visit projects_path
     end
 
-    scenario 'create project with valid attribute' do
-      within '.new-project' do
+    scenario 'create project with valid attribute', js: true do
+      within 'div.new-project' do
         fill_in 'Title', with: 'Name Project'
         fill_in 'Description', with: 'Description project'
         click_on 'Save'
       end
       expect(current_path).to eq projects_path
-      expect(page).to have_content 'Your project successfully created.'
-      expect(page).to have_content 'Name Project'
-      expect(page).to have_content 'Description project'
+      project = user.authored_projects.first
+      within "#project-#{project.id}" do
+        expect(page).to have_content 'Name Project'
+        expect(page).to have_content 'Description project'
+      end
     end
 
-    scenario 'create project with invalid attribute' do
-      within '.new-project' do
+    scenario 'create project with invalid attribute', js: true do
+      within 'div.new-project' do
         click_on 'Save'
       end
       expect(current_path).to eq projects_path

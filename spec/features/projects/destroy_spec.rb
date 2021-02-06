@@ -10,11 +10,11 @@ feature 'User can delete projects', '
   given!(:project) { create :project, author: user }
 
   context 'Authenticated user' do
-    scenario 'author tries delete project' do
+    scenario 'author tries delete project', js: true do
       sign_in user
       visit projects_path
       click_on 'Delete'
-      expect(page).to_not have_content 'MyString'
+      expect(page).to_not have_css "#project-#{project.id}"
     end
 
     scenario 'not author tries delete project' do

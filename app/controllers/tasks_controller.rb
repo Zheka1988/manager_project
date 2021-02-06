@@ -21,7 +21,7 @@ class TasksController < ApplicationController
   end
 
   def complete_task
-    @task.complete_task
+    @task.complete_task unless @task.completed
   end
 
   private

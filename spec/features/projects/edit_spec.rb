@@ -10,27 +10,34 @@ feature 'User can edited projects', '
   given!(:project) { create :project, author: user }
 
   context 'Authenticated user ' do
-    context 'Autor' do
+    context 'Autor', js: true do
       background do
         sign_in(user)
         visit projects_path
-        click_on 'Edit'
+        within "#project-#{project.id}" do
+          click_on 'Edit'
+        end
       end
 
       scenario 'tries edited project with valid attributes' do
-        fill_in 'Title', with: 'New title'
-        fill_in 'Description', with: 'New description'
-        click_on 'Save'
+        within "#project-#{project.id}" do
+          fill_in 'Title', with: 'New title'
+          fill_in 'Description', with: 'New description'
+          click_on 'Save'
+          expect(page).to_not have_content project.title
+          expect(page).to_not have_content project.description
+          expect(page).to have_content 'New title'
+          expect(page).to have_content 'New description'
+        end
 
-        expect(page).to have_content 'New title'
-        expect(page).to have_content 'New description'
       end
 
       scenario 'tries edited project with invalid attributes' do
-        fill_in 'Title', with: nil
-        click_on 'Save'
-
-        expect(page).to have_content "can't be blank"
+        within "#project-#{project.id}" do
+          fill_in 'Title', with: nil
+          click_on 'Save'
+        end
+        expect(page).to have_content "Title can't be blank"
       end
     end
 

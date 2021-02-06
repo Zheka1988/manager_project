@@ -16,8 +16,7 @@ feature 'User can delete tasks', '
       visit project_path(project)
       within '.tasks' do
         click_on 'Delete'
-        expect(page).to_not have_content 'MyText'
-        # 'div#task-#{task.id}'
+        expect(page).to_not have_css "#task-#{task.id}"
       end
     end
     scenario 'not author tries delete task' do

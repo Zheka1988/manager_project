@@ -1,0 +1,7 @@
+$('.new-project .project-errors').html('<%= render 'shared/errors', resource: @project %>');
+
+<% if @project.persisted? %>
+  $('.projects').append('<%= j render @project %>');
+  $('.new-project #project_title').val('');
+  $('.new-project #project_description').val('');
+<% end %>

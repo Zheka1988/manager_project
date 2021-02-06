@@ -2,7 +2,7 @@
 
 class ProjectsController < ApplicationController
   before_action :authenticate_user!
-  before_action :load_project, only: %i[show edit update destroy]
+  before_action :load_project, only: %i[show update destroy]
 
   def index
     @projects = current_user.authored_projects
@@ -13,29 +13,17 @@ class ProjectsController < ApplicationController
     @task = Task.new
   end
 
-  def edit; end
-
   def create
     @project = current_user.authored_projects.build(project_params)
-    if @project.save
-      redirect_to projects_path, notice: 'Your project successfully created.'
-    else
-      @projects = current_user.authored_projects
-      render :index
-    end
+    @project.save
   end
 
   def update
-    if @project.update(project_params)
-      redirect_to @project
-    else
-      render :edit
-    end
+    @project.update(project_params)
   end
 
   def destroy
     @project.destroy
-    redirect_to projects_path
   end
 
   private

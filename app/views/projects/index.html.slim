@@ -1,4 +1,8 @@
 h1= "PROJECTS"
 .projects
   = render @projects
+
+.new-project
+  .project-errors
+    = render 'shared/errors', resource: @project
   = render 'form'

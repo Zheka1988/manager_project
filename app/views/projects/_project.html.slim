@@ -1,9 +1,23 @@
-- if project.persisted?
-  h3= project.title
-  p
-    = project.description
+div id = "project-#{project.id}"
+  - if user_signed_in? && project.persisted?
+    h3= project.title
+    p= project.description
     = link_to 'Show', project_path(project)
-    = link_to 'Edit', edit_project_path(project)
+    = link_to 'Edit', '#', class: 'edit-project-link', data: { project_id: project.id }
     = link_to 'Delete', project_path(project),
       method: :delete,
-      params: { confirm: 'Are you sure?' }
+      params: { confirm: 'Are you sure?' },
+      remote: true
+
+  .project-errors
+    = render 'shared/errors', resource: @project 
+
+  = form_with model: project, local: false, class: 'hidden', html: {id: "edit-project-#{project.id}"} do |f|
+    p
+      = f.label :title
+      = f.text_field :title
+    p
+      = f.label :description
+      = f.text_field :description
+    p
+      = f.submit 'Save'
