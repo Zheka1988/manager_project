@@ -1,6 +1,5 @@
 .project
-  h1 = @project.title
-  p= @project.description
+  p= "#{@project.title} / #{@project.description}"
 
 .tasks
   = render @project.tasks

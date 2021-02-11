@@ -1,8 +1,21 @@
-h1= "PROJECTS"
-.projects
+.projects 
   = render @projects
 
-.new-project
-  .project-errors
-    = render 'shared/errors', resource: @project
-  = render 'form'
+.container
+  div class="new-project my-3" id="new-project"
+    div class="row d-flex align-items-center justify-content-center text-center"
+      div class="col-6"
+        .project-errors
+          = render 'shared/errors', resource: @project
+        = form_with model: @project, local: false, class: 'py-2' do |f|
+          .row
+            h4= f.label :title, class: 'project-title'
+            .col
+              = f.text_field :title, class: "form-control"
+          .row 
+            h4= f.label :description, class: 'project-description'
+            .col
+              = f.text_field :description, class: "form-control"
+          .row
+            div class="col-6 py-2 offset-md-3"
+              = f.submit 'Save', class: "form-control btn"

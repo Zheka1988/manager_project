@@ -12,7 +12,10 @@ import 'common/tasks'
 import 'common/projects'
 import * as bootstrap from 'bootstrap'
 import "../stylesheets/application"
-
+import "../stylesheets/navbar"
+import "../stylesheets/common"
+import "../stylesheets/project"
+import "../stylesheets/footer"
 
 Rails.start()
 Turbolinks.start()

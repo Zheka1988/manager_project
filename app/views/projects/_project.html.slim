@@ -1,23 +1,38 @@
-div id = "project-#{project.id}"
+div class="container text-center"
   - if user_signed_in? && project.persisted?
-    h3= project.title
-    p= project.description
-    = link_to 'Show', project_path(project)
-    = link_to 'Edit', '#', class: 'edit-project-link', data: { project_id: project.id }
-    = link_to 'Delete', project_path(project),
-      method: :delete,
-      params: { confirm: 'Are you sure?' },
-      remote: true
+    div class="project my-3"  id = "project-#{project.id}"
+      div class="row d-flex align-items-center justify-content-center"
+        div class="col"
+          div class="project-title"
+            h3= project.title
+        div class="col"
+          div class="project-description"
+            = project.description
+        div class="col"
+          div class="project-action"
+            = link_to 'Show', project_path(project), class: "btn btn-show me-2"
+            = link_to 'Edit', '#', class: 'edit-project-link btn btn-edit me-2', data: { project_id: project.id }
+            = link_to 'Delete', project_path(project), 
+                method: :delete,
+                params: { confirm: 'Are you sure?' },
+                remote: true,
+                class: "btn btn-delete"
 
-  .project-errors
-    = render 'shared/errors', resource: @project 
+      .container
+        div class="row d-flex align-items-center justify-content-center edit-form"
+          div class="col-6"
+            .project-errors
+              = render 'shared/errors', resource: @project 
 
-  = form_with model: project, local: false, class: 'hidden', html: {id: "edit-project-#{project.id}"} do |f|
-    p
-      = f.label :title
-      = f.text_field :title
-    p
-      = f.label :description
-      = f.text_field :description
-    p
-      = f.submit 'Save'
+            = form_with model: project, local: false, class: 'hidden py-1', html: {id: "edit-project-#{project.id}"} do |f|
+              .row
+                = f.label :title, class: 'project-title'
+                .col
+                  = f.text_field :title, class: "form-control"
+              .row 
+                = f.label :description, class: 'project-description'
+                .col
+                  = f.text_field :description, class: "form-control"
+              .row
+                div class="col-6 py-2 offset-md-3"
+                  = f.submit 'Save', class: "form-control btn"

@@ -1,0 +1,46 @@
+.project {
+    background: rgba(255,255,255,0.9);
+    color: #000;
+    border-radius: 10px;
+}
+
+.project .btn{
+    background:rgb(241, 238, 26);
+    color: black;
+    border-color: black;
+}
+.project .btn:hover{
+    background:black;
+    color: white;
+}
+
+.project .edit-form{
+    background:rgba(241, 238, 26, 0.8);
+}
+
+.project-errors .errors-title{
+    padding-top: 10px;
+    font-size: 16px;
+    color:rgb(255, 0, 0);
+}
+
+.project-errors ul{
+    list-style: none;
+    align-content: center;
+}
+
+.new-project{
+    background:rgba(223, 223, 223, 0.8);
+    border-radius: 10px;
+}
+.new-project .btn{
+    background:rgb(241, 238, 26);
+    color: black;
+    border-color: black;
+}
+.new-project .btn:hover{
+    background:black;
+    color: white;
+}
+
+
