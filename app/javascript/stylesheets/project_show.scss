@@ -1,0 +1,51 @@
+.project-show {
+    background: rgba(255,255,255,0.9);
+    color: #000;
+    border-radius: 10px;
+}
+
+.project-show .project-data {
+    background: rgba(39, 39, 49, 0.9);
+    color: rgb(255, 255, 255);
+    padding: 3px;   
+}
+
+.task .btn{
+    background:rgb(241, 238, 26);
+    color: black;
+    border-color: black;
+}
+.task .btn:hover{
+    background:black;
+    color: white;
+}
+// ----------------------------------Edit Task
+.task-errors .errors-title{
+    padding-top: 10px;
+    font-size: 16px;
+    color:rgb(255, 0, 0);
+}
+
+.task-errors ul{
+    list-style: none;
+    align-content: center;
+}
+
+.task .edit-form{
+    background:rgba(241, 238, 26, 0.8);
+}
+
+// -------------------------------------new Task
+.new-task{
+    background:rgba(223, 223, 223, 0.8);
+    border-radius: 10px;
+}
+.new-task .btn{
+    background:rgb(241, 238, 26);
+    color: black;
+    border-color: black;
+}
+.new-task .btn:hover{
+    background:black;
+    color: white;
+}

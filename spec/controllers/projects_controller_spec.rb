@@ -101,7 +101,8 @@ RSpec.describe ProjectsController, type: :controller do
         end
 
         it 'changes projects attributes' do
-          patch :update, params: { id: project, project: { title: 'new title', description: 'new description' } }, format: :js
+          patch :update, params: { id: project, project: { title: 'new title', description: 'new description' } },
+                         format: :js
           project.reload
 
           expect(project.title).to eq 'new title'
@@ -131,7 +132,9 @@ RSpec.describe ProjectsController, type: :controller do
 
     context 'Not author' do
       it 'does not assign the requested project to @project' do
-        patch :update, params: { id: other_project, project: { title: 'new title', description: 'new description' }, format: :js }
+        patch :update,
+              params: { id: other_project, project: { title: 'new title', description: 'new description' },
+                        format: :js }
         expect(assigns(:project)).to eq nil
       end
 

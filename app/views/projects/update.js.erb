@@ -1,5 +1,5 @@
 $('.projects #project-<%= @project.id %> .project-errors').html('<%= render 'shared/errors', resource: @project%>');
 
 <% if !@project.errors.present? %>
-  $('.projects #project-<%= @project.id%> ').html('<%= j render @project %>');
+  $("#project-<%= @project.id%>").html('<%= j render @project %>');
 <% end %>

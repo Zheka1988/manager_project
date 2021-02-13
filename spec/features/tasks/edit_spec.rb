@@ -16,7 +16,7 @@ feature 'User can edited tasks', '
         sign_in(user)
         visit project_path(project)
         within '.tasks' do
-          click_on 'Edit'
+          click_on(class: 'edit-task-link')
         end
       end
 

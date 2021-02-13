@@ -1,12 +1,17 @@
-= form_with model: [@project, @task], local: false, class: 'new-task' do |f|
-  p
-    = f.label :body
-    = f.text_field :body
-  p
-    = f.label :priority
-    = f.select :priority, ["1", "2", "3", "4"]
-  p
-    = f.label :deadline
-    = f.datetime_select :deadline
-  p
-    = f.submit 'Save'
+= form_with model: [@project, @task], local: false, class: 'form-new-task py-2' do |f|
+  div class="row py-1"
+    h5= f.label :body, class: 'edit-task-body'
+    .col
+      = f.text_area :body, class: 'form-control'
+  div class="row py-1"
+    .col                  
+      h5 = f.label :priority, class: 'edit-task-priority'
+    .col    
+      = f.select :priority, ["1", "2", "3", "4"], class: "form-control"
+  div class="row py-1"
+    h5= f.label :deadline, class: "edit-task-deadline"
+    .col
+      = f.datetime_select :deadline, class: "form-control"
+  div class="row py-1"
+    div class="col-6 py-2 offset-md-3"              
+      = f.submit 'Save', class: "form-control btn"

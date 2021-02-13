@@ -1,6 +1,6 @@
-div class="container text-center"
-  - if user_signed_in? && project.persisted?
-    div class="project my-3"  id = "project-#{project.id}"
+- if user_signed_in? && project.persisted?
+  div id = "project-#{project.id}"
+    div class="container project my-3 text-center"
       div class="row d-flex align-items-center justify-content-center"
         div class="col"
           div class="project-title"
@@ -18,21 +18,20 @@ div class="container text-center"
                 remote: true,
                 class: "btn btn-delete"
 
-      .container
-        div class="row d-flex align-items-center justify-content-center edit-form"
-          div class="col-6"
-            .project-errors
-              = render 'shared/errors', resource: @project 
+      div class="row d-flex align-items-center justify-content-center edit-form"
+        div class="col-6"
+          .project-errors
+            = render 'shared/errors', resource: @project 
 
-            = form_with model: project, local: false, class: 'hidden py-1', html: {id: "edit-project-#{project.id}"} do |f|
-              .row
-                = f.label :title, class: 'project-title'
-                .col
-                  = f.text_field :title, class: "form-control"
-              .row 
-                = f.label :description, class: 'project-description'
-                .col
-                  = f.text_field :description, class: "form-control"
-              .row
-                div class="col-6 py-2 offset-md-3"
-                  = f.submit 'Save', class: "form-control btn"
+          = form_with model: project, local: false, class: 'hidden py-1', html: {id: "edit-project-#{project.id}"} do |f|
+            .row
+              = f.label :title, class: 'edit-project-title'
+              .col
+                = f.text_field :title, class: "form-control"
+            .row 
+              = f.label :description, class: 'edit-project-description'
+              .col
+                = f.text_field :description, class: "form-control"
+            .row
+              div class="col-6 py-2 offset-md-3"
+                = f.submit 'Save', class: "form-control btn"

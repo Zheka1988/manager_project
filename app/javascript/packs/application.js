@@ -14,7 +14,8 @@ import * as bootstrap from 'bootstrap'
 import "../stylesheets/application"
 import "../stylesheets/navbar"
 import "../stylesheets/common"
-import "../stylesheets/project"
+import "../stylesheets/projects"
+import "../stylesheets/project_show"
 import "../stylesheets/footer"
 
 Rails.start()

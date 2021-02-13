@@ -116,7 +116,7 @@ RSpec.describe TasksController, type: :controller do
 
     context 'as not author' do
       let!(:other_task) { create :task, project: other_project, author: other_user }
-      
+
       it 'not delete the task' do
         expect { delete :destroy, params: { id: other_task }, format: :js }.to_not change(other_project.tasks, :count)
       end

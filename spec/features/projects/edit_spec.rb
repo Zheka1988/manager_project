@@ -29,7 +29,6 @@ feature 'User can edited projects', '
           expect(page).to have_content 'New title'
           expect(page).to have_content 'New description'
         end
-
       end
 
       scenario 'tries edited project with invalid attributes' do

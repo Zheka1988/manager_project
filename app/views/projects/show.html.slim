@@ -1,10 +1,18 @@
-.project
-  p= "#{@project.title} / #{@project.description}"
+div class="container text-center"
+  .project-show
+    .project-data
+      h3= @project.title
+      p= @project.description
+    .tasks
+      = render @project.tasks
 
-.tasks
-  = render @project.tasks
+  .container
+    div class="new-task my-3" id="new-task"
+      div class="row d-flex align-items-center justify-content-center text-center"
+        div class="col-6"
+          .task-errors
+            = render 'shared/errors', resource: @task
+          = render 'tasks/form'
 
-.new-task
-  .task-errors
-    = render 'shared/errors', resource: @task 
-  = render 'tasks/form'
+
+

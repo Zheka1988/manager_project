@@ -15,7 +15,8 @@ feature 'User can delete tasks', '
       sign_in user
       visit project_path(project)
       within '.tasks' do
-        click_on 'Delete'
+        # find("a[href='#{task_path(task)}']").click
+        click_on(class: 'delete-task-link')
         expect(page).to_not have_css "#task-#{task.id}"
       end
     end
